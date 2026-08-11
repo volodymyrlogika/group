@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def main():
+def gurnal():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'group.settings')
     try:
@@ -18,5 +18,5 @@ def main():
     execute_from_command_line(sys.argv)
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == '__gurnal__':
+    gurnal()
