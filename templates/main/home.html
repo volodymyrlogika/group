@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Головна{% endblock %}
+
+{% block content %}
+<h1>Ласкаво просимо до Порталу групи</h1>
+
+<h2>Найближчі події</h2>
+{% if upcoming_events %}
+    <div class="list-group">
+        {% for event in upcoming_events %}
+            <a href="{% url 'event_detail' event.pk %}" class="list-group-item list-group-item-action">
+                <strong>{{ event.title }}</strong><br>
+                {{ event.start_time|date:'d.m.Y H:i' }} - {{ event.end_time|date:'d.m.Y H:i' }}<br>
+                {{ event.location }}
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Немає запланованих подій.</p>
+{% endif %}
+{% endblock %}

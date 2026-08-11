@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ event.title }}</h1>
+<p>{{ event.description }}</p>
+<ul class="list-unstyled">
+    <li><strong>Початок:</strong> {{ event.start_time|date:'d.m.Y H:i' }}</li>
+    <li><strong>Кінець:</strong> {{ event.end_time|date:'d.m.Y H:i' }}</li>
+    {% if event.location %}<li><strong>Місце:</strong> {{ event.location }}</li>{% endif %}
+</ul>
+{% if user.is_authenticated and user.is_staff %}
+    <a class="btn btn-secondary" href="{% url 'event_edit' event.pk %}">Редагувати</a>
+    <a class="btn btn-danger" href="{% url 'event_delete' event.pk %}">Видалити</a>
+{% endif %}
+{% endblock %}

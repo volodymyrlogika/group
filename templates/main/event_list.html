@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Події{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Події</h1>
+    {% if user.is_authenticated and user.is_staff %}
+        <a class="btn btn-primary" href="{% url 'event_create' %}">Додати подію</a>
+    {% endif %}
+</div>
+
+{% if events %}
+    <div class="list-group">
+        {% for event in events %}
+            <div class="list-group-item">
+                <h5><a href="{% url 'event_detail' event.pk %}">{{ event.title }}</a></h5>
+                <p class="mb-1">{{ event.start_time|date:'d.m.Y H:i' }} - {{ event.end_time|date:'d.m.Y H:i' }}</p>
+                <p class="mb-1">{{ event.location }}</p>
+                {% if user.is_authenticated and user.is_staff %}
+                    <div>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'event_edit' event.pk %}">Редагувати</a>
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'event_delete' event.pk %}">Видалити</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Події не знайдено.</p>
+{% endif %}
+{% endblock %}

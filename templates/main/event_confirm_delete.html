@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Підтвердьте видалення{% endblock %}
+
+{% block content %}
+<h1>Видалити подію</h1>
+<p>Ви дійсно хочете видалити подію «{{ object.title }}»?</p>
+<form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger" type="submit">Видалити</button>
+    <a class="btn btn-secondary" href="{% url 'event_list' %}">Скасувати</a>
+</form>
+{% endblock %}

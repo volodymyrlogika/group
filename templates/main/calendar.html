@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Календар{% endblock %}
+
+{% block content %}
+<h1>Календар подій</h1>
+<div class="mb-3">
+    <a class="btn btn-outline-secondary" href="?year={{ prev_month|slice:':4' }}&month={{ prev_month|slice:'5:' }}">Попередній місяць</a>
+    <a class="btn btn-outline-secondary" href="?year={{ next_month|slice:':4' }}&month={{ next_month|slice:'5:' }}">Наступний місяць</a>
+</div>
+<h2>{{ month_name }} {{ year }}</h2>
+<table class="table table-bordered text-center">
+    <thead>
+        <tr>
+            {% for weekday in weekdays %}
+                <th>{{ weekday }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for week in month_weeks %}
+            <tr>
+                {% for day_data in week %}
+                    <td class="align-top {% if day_data.date.month != month %}bg-light text-muted{% endif %}">
+                        <div><strong>{{ day_data.date.day }}</strong></div>
+                        {% for event in day_data.events %}
+                            <div class="badge bg-primary text-wrap mb-1">
+                                <a class="text-white text-decoration-none" href="{% url 'event_detail' event.pk %}">{{ event.title }}</a>
+                            </div>
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
