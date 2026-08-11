@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+<div class="container my-4">
+    <div class="row">
+      {% for project in object_list %}
+        <div class="col-md-4">
+          <div class="card shadow-sm mb-4">
+            {% if project.screenshot %}
+              <img src="{{ project.screenshot.url }}" class="card-img-top" alt="{{ project.title }}">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ project.title }}</h5>
+              <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+              <a href="{% url 'portfolio_detail' project.pk %}" class="btn btn-primary">View</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

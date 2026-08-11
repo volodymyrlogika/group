@@ -1,7 +1,13 @@
 from django.urls import path
-from . import views
+from .views import (
+    ProjectListView,
+    ProjectDetailView,
+    ProjectCreateView,
+    ProjectUpdateView,
+    ProjectDeleteView,
+)
 
 urlpatterns = [
-    # Визнач тут свої URL-шляхи
+    path('', ProjectListView.as_view(), name='project_list'),
     
 ]
