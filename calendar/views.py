@@ -24,7 +24,7 @@ class StaffRequiredMixin(UserPassesTestMixin):
 
 class HomeView(ListView):
     model = Event
-    template_name = 'main/home.html'
+    template_name = 'calendar/home.html'
     context_object_name = 'upcoming_events'
 
     def get_queryset(self):
@@ -33,7 +33,7 @@ class HomeView(ListView):
 
 class EventListView(ListView):
     model = Event
-    template_name = 'main/event_list.html'
+    template_name = 'calendar/event_list.html'
     context_object_name = 'events'
 
     def get_queryset(self):
@@ -42,14 +42,14 @@ class EventListView(ListView):
 
 class EventDetailView(DetailView):
     model = Event
-    template_name = 'main/event_detail.html'
+    template_name = 'calendar/event_detail.html'
     context_object_name = 'event'
 
 
 class EventCreateView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
-    template_name = 'main/event_form.html'
+    template_name = 'calendar/event_form.html'
     success_url = reverse_lazy('event_list')
 
     def form_valid(self, form):
@@ -60,18 +60,18 @@ class EventCreateView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
 class EventUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
-    template_name = 'main/event_form.html'
+    template_name = 'calendar/event_form.html'
     success_url = reverse_lazy('event_list')
 
 
 class EventDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
     model = Event
-    template_name = 'main/event_confirm_delete.html'
+    template_name = 'calendar/event_confirm_delete.html'
     success_url = reverse_lazy('event_list')
 
 
 class EventCalendarView(TemplateView):
-    template_name = 'main/calendar.html'
+    template_name = 'calendar/calendar.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
