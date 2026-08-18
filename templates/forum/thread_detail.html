@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 800px;">
+    <a href="{% url 'forum_home' %}" class="btn btn-secondary btn-sm mb-3">← Назад до тем</a>
+
+    <div class="card mb-4 border-primary">
+        <div class="card-body">
+            <h2 class="card-title text-primary">{{ thread.title }}</h2>
+            <p class="card-text text-muted">{{ thread.description }}</p>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Повідомлення:</h4>
+
+    <div class="mb-4">
+        {% for post in posts %}
+            <div class="card mb-2 shadow-sm">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong>{{ post.author.username }}</strong>
+                        <small class="text-muted">{{ post.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                    <p class="card-text mb-2">{{ post.content }}</p>
+                    
+                    {% if post.image %}
+                        <div class="mb-2">
+                            <img src="{{ post.image.url }}" alt="Фото" class="img-fluid rounded" style="max-height: 300px;">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">У цій темі ще немає повідомлень. Напишіть першим!</p>
+        {% endfor %}
+    </div>
+
+    <div class="card p-3">
+        <h5>Додати повідомлення:</h5>
+        {% if user.is_authenticated %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_content" class="form-label">Текст повідомлення:</label>
+                    <textarea name="content" id="id_content" rows="3" class="form-control" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="id_image" class="form-label">Додати картинку (не обов'язково):</label>
+                    <input type="file" name="image" id="id_image" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Надіслати</button>
+            </form>
+        {% else %}
+            <div class="alert alert-warning mb-0">
+                Тільки зареєстровані користувачі можуть писати повідомлення. Будь ласка, увійдіть в аккаунт.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

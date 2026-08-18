@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Форум обговорень</h1>
+    
+    <!-- Список гілок форуму -->
+    <div class="list-group">
+        {% for thread in threads %}
+            <!-- При натисканні переходимо на конкретну гілку за її ID -->
+            <a href="{% url 'thread_detail' thread.id %}" class="list-group-item list-group-item-action p-3">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1 text-primary">{{ thread.title }}</h5>
+                    <small class="text-muted">{{ thread.created_at|date:"d.m.Y H:i" }}</small>
+                </div>
+                <p class="mb-1 text-secondary">{{ thread.description }}</p>
+                <small class="text-muted">Автор теми: {{ thread.creator.username }}</small>
+            </a>
+        {% empty %}
+            <!-- Якщо в базі даних ще немає тем, покаже це повідомлення -->
+            <div class="alert alert-info">На форумі поки немає жодної теми.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
