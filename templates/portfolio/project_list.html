@@ -1,20 +1,110 @@
 {% extends 'base.html' %}
-<div class="container my-4">
-    <div class="row">
-      {% for project in object_list %}
-        <div class="col-md-4">
-          <div class="card shadow-sm mb-4">
-            {% if project.screenshot %}
-              <img src="{{ project.screenshot.url }}" class="card-img-top" alt="{{ project.title }}">
-            {% endif %}
-            <div class="card-body">
-              <h5 class="card-title">{{ project.title }}</h5>
-              <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-              <a href="{% url 'portfolio_detail' project.pk %}" class="btn btn-primary">View</a>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
+
+{% block title %}Всі проєкти | Портфоліо{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  {# Верхня шапка сторінки з кнопкою створення проєкту #}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="fw-bold mb-1">Мої проєкти</h1>
+      <p class="text-muted m-0">Список усіх розроблених веб-додатків та робіт</p>
     </div>
+
+    {# Кнопка додавання нового проєкту (пункт 3) #}
+    {% if user.is_authenticated %}
+      <a href="{% url 'project_create' %}" class="btn btn-primary px-3 py-2 fw-semibold">
+        <i class="bi bi-plus-lg me-1"></i> Додати проєкт
+      </a>
+    {% endif %}
   </div>
+
+  {# Сітка картка-проєктів #}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for project in projects %}
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden position-relative">
+          
+          {# Прев'ю першого зображення проєкту #}
+          {% if project.images.first %}
+            <img src="{{ project.images.first.image.url }}" class="card-img-top" alt="{{ project.name }}" style="height: 200px; object-fit: cover;">
+          {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
+              <i class="bi bi-image fs-1"></i>
+            </div>
+          {% endif %}
+
+          <div class="card-body d-flex flex-column p-4">
+            
+            {# Заголовок та позначка кращого проєкту #}
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title fw-bold m-0 text-truncate">{{ project.name }}</h5>
+              {% if project.best_project %}
+                <span class="badge bg-warning text-dark ms-2">
+                  <i class="bi bi-star-fill me-1"></i> Top
+                </span>
+              {% endif %}
+            </div>
+
+            {# Технології #}
+            {% if project.get_technologies_list %}
+              <div class="mb-3">
+                {% for tech in project.get_technologies_list %}
+                  <span class="badge bg-secondary bg-opacity-10 text-secondary border small mb-1 me-1">
+                    {{ tech }}
+                  </span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {# Короткий опис #}
+            <p class="card-text text-secondary small flex-grow-1">
+              {{ project.description|truncatewords:20 }}
+            </p>
+
+            <div class="border-top pt-3 mt-2 d-flex justify-content-between align-items-center">
+              
+              {# КНОПКА VIEW (Перейти до деталей) #}
+              <a href="{% url 'project_detail' project.pk %}" class="btn btn-sm btn-outline-primary px-3 fw-semibold">
+                <i class="bi bi-eye me-1"></i> View
+              </a>
+
+              {# Дії для автора проєкту (Edit / Delete) #}
+              {% if user.is_authenticated and project.author == user %}
+                <div class="btn-group btn-group-sm">
+                  <a href="{% url 'project_update' project.pk %}" class="btn btn-outline-warning" title="Редагувати">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="{% url 'project_delete' project.pk %}" class="btn btn-outline-danger" title="Видалити">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              {% endif %}
+
+            </div>
+
+          </div>
+
+          <div class="card-footer bg-light border-0 px-4 py-2 text-end">
+            <small class="text-muted fs-7">
+              <i class="bi bi-calendar3 me-1"></i>{{ project.created_at|date:"d.m.Y" }}
+            </small>
+          </div>
+
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-folder2-open text-muted fs-1 d-block mb-3"></i>
+        <h4 class="fw-semibold text-secondary">Проєктів поки немає</h4>
+        <p class="text-muted">Будьте першим, хто додасть свій проєкт у портфоліо!</p>
+        {% if user.is_authenticated %}
+          <a href="{% url 'project_create' %}" class="btn btn-primary mt-2">Додати проєкт</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
 {% endblock %}

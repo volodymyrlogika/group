@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.name }} | Деталі проєкту{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    
+    {# Кнопка повернення до списку #}
+    <div class="mb-3">
+      <a href="{% url 'project_list' %}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Назад до всіх проєктів
+      </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3 overflow-hidden mb-4">
+      
+      {# 1. Карусель зображень (якщо є завантажені картинки) #}
+      {% if project.images.all %}
+        <div id="projectCarousel" class="carousel slide bg-dark" data-bs-ride="carousel">
+          
+          {# Індикатори (крапки) внизу слайдера #}
+          {% if project.images.count > 1 %}
+            <div class="carousel-indicators">
+              {% for img in project.images.all %}
+                <button type="button" data-bs-target="#projectCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                        class="{% if forloop.first %}active{% endif %}" 
+                        aria-current="{% if forloop.first %}true{% endif %}" 
+                        aria-label="Слайд {{ forloop.counter }}"></button>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {# Слайди #}
+          <div class="carousel-inner">
+            {% for img in project.images.all %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %} text-center">
+                <img src="{{ img.image.url }}" class="img-fluid object-fit-contain" style="max-height: 450px; width: 100%;" alt="{{ project.name }}">
+              </div>
+            {% endfor %}
+          </div>
+
+          {# Стрелки перемикання #}
+          {% if project.images.count > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Попередній</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Наступний</span>
+            </button>
+          {% endif %}
+
+        </div>
+      {% endif %}
+
+      {# 2. Текстова інформація про проєкт #}
+      <div class="card-body p-4 p-md-5">
+        
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h1 class="fw-bold m-0">{{ project.name }}</h1>
+          {% if project.best_project %}
+            <span class="badge bg-warning text-dark fs-6">
+              <i class="bi bi-star-fill me-1"></i> Обраний проєкт
+            </span>
+          {% endif %}
+        </div>
+
+        <p class="text-muted small mb-4">
+          <i class="bi bi-person me-1"></i> <strong>{{ project.author.username }}</strong> &bull;
+          <i class="bi bi-calendar3 me-1"></i> {{ project.created_at|date:"d E Y" }}
+        </p>
+
+        {# Перелік технологій #}
+        {% if project.get_technologies_list %}
+          <div class="mb-4">
+            <h6 class="fw-semibold text-secondary mb-2">Використані технології:</h6>
+            {% for tech in project.get_technologies_list %}
+              <span class="badge bg-primary bg-opacity-10 text-primary fs-6 me-1 mb-1 px-3 py-2 rounded-pill">
+                {{ tech }}
+              </span>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <hr class="my-4 text-muted">
+
+        {# Опис проєкту #}
+        <div class="mb-4">
+          <h5 class="fw-bold mb-3">Про проєкт:</h5>
+          <div class="lh-lg text-secondary" style="white-space: pre-line;">
+            {{ project.description }}
+          </div>
+        </div>
+
+        {# Посилання та файли #}
+        <div class="d-flex flex-wrap gap-2 pt-3">
+          {% if project.project_link %}
+            <a href="{{ project.project_link }}" target="_blank" class="btn btn-primary px-4">
+              <i class="bi bi-box-arrow-up-right me-2"></i>Відкрити проєкт
+            </a>
+          {% endif %}
+
+          {% if project.files %}
+            <a href="{{ project.files.url }}" download class="btn btn-outline-secondary px-4">
+              <i class="bi bi-download me-2"></i>Завантажити файли проєкту
+            </a>
+          {% endif %}
+        </div>
+
+      </div>
+
+      {# 3. Кнопки управління для автора проєкту #}
+      {% if user.is_authenticated and project.author == user %}
+        <div class="card-footer bg-light p-3 d-flex justify-content-end gap-2">
+          <a href="{% url 'project_update' project.pk %}" class="btn btn-warning text-white">
+            <i class="bi bi-pencil me-1"></i> Редагувати
+          </a>
+          <a href="{% url 'project_delete' project.pk %}" class="btn btn-danger">
+            <i class="bi bi-trash me-1"></i> Видалити
+          </a>
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}

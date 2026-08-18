@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  {% if object %}Редагування: {{ object.name }}{% else %}Створення нового проєкту{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8">
+    
+    <div class="mb-3">
+      <a href="{% url 'project_list' %}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Назад до списку
+      </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+      <div class="card-body p-4 p-sm-5">
+        
+        <h3 class="card-title fw-bold mb-4">
+          {% if object %}
+            <i class="bi bi-pencil-square text-primary me-2"></i>Редагувати проєкт
+          {% else %}
+            <i class="bi bi-plus-circle text-primary me-2"></i>Додати новий проєкт
+          {% endif %}
+        </h3>
+
+        {% if form.errors %}
+          <div class="alert alert-danger py-2 small" role="alert">
+            Будь ласка, виправте помилки у формі.
+          </div>
+        {% endif %}
+
+        {# Важливо: enctype="multipart/form-data" потрібен для завантаження файлів #}
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+
+          {% for field in form %}
+            <div class="mb-3">
+              {% if field.field.widget.input_type == 'checkbox' %}
+                <div class="form-check form-switch mt-2">
+                  {{ field }}
+                  <label class="form-check-label fw-semibold" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                  </label>
+                </div>
+              {% else %}
+                <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
+                  {{ field.label }}
+                </label>
+                {{ field }}
+              {% endif %}
+
+              {% if field.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in field.errors %}
+                    <div>{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              {% if field.help_text %}
+                <div class="form-text small text-muted">{{ field.help_text }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <a href="{% url 'project_list' %}" class="btn btn-outline-secondary px-4">Скасувати</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              {% if object %}Зберегти зміни{% else %}Створити проєкт{% endif %}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
