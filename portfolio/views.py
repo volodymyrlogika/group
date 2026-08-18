@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Project
+from .forms import ProjectForm
 
 class ProjectListView(LoginRequiredMixin, ListView):
     model = Project
@@ -20,7 +21,7 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
-    fields = ['name', 'description', 'project_link', 'files', 'best_project', 'technologies']
+    form_class = ProjectForm
     template_name = 'portfolio/project_form.html'
     success_url = reverse_lazy('project_list')
 
@@ -31,7 +32,7 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
 
 class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Project
-    fields = ['name', 'description', 'project_link', 'files', 'best_project', 'technologies']
+    form_class = ProjectForm
     template_name = 'portfolio/project_form.html'
     success_url = reverse_lazy('project_list')
 
@@ -48,3 +49,4 @@ class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         project = self.get_object()
         return project.author == self.request.user
+
