@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>{% if survey %}Редагувати опитування{% else %}Створити опитування{% endif %}</h2>
+    
+    <form method="POST" enctype="multipart/form-data" id="survey-form">
+        {% csrf_token %}
+        <input type="hidden" name="servay_id" value="{% if survey %}{{ survey.id }}{% endif %}">
+
+        <!-- Шапка опитування -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">Основна інформація</div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Назва опитування</label>
+                    <input type="text" name="servay_name" class="form-control" value="{% if survey %}{{ survey.title }}{% endif %}" required placeholder="Введіть назву...">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Опис</label>
+                    <textarea name="servay_description" class="form-control" rows="3" placeholder="Опис опитування...">{% if survey %}{{ survey.description }}{% endif %}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Контейнер для питань -->
+        <div id="questions-container">
+            <h3>Запитання</h3>
+            
+            <!-- Питання №0 -->
+            <div class="card mb-3 question-card shadow-sm" data-question-index="0">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Текст запитання</label>
+                        <input type="text" name="quetions_text[]" class="form-control" required placeholder="Введіть запитання...">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Номер сторінки</label>
+                            <input type="number" name="quetions_page_number[]" class="form-control" value="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Порядок (order)</label>
+                            <input type="number" name="quetions_order[]" class="form-control" value="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Зображення</label>
+                            <input type="file" name="quetions_image[]" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <!-- Блок відповідей для цього питання -->
+                    <div class="answers-section border-top pt-3 mt-3">
+                        <h5>Варіанти відповідей</h5>
+                        <div class="answers-list">
+                            <div class="answer-row input-group mb-2">
+                                <input type="text" name="answer_text_0[]" class="form-control" placeholder="Варіант відповіді...">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0 answer-checkbox" type="checkbox" name="answer_is_correct_0[]" value="0"> Правильна
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-2 add-answer-btn">+ Додати варіант відповіді</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-secondary mb-3" id="add-question-btn">+ Додати ще питання</button>
+        <hr>
+        <button type="submit" class="btn btn-success btn-lg">Зберегти все</button>
+    </form>
+</div>
+
+<!-- Скрипт для динамічного додавання питань та варіантів відповідей -->
+<script>
+    let questionIndex = 1;
+
+    // Додавання нового питання
+    document.getElementById('add-question-btn').addEventListener('click', function() {
+        const container = document.getElementById('questions-container');
+        const cardHtml = `
+            <div class="card mb-3 question-card shadow-sm" data-question-index="${questionIndex}">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Текст запитання</label>
+                        <input type="text" name="quetions_text[]" class="form-control" required placeholder="Введіть запитання...">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Номер сторінки</label>
+                            <input type="number" name="quetions_page_number[]" class="form-control" value="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Порядок (order)</label>
+                            <input type="number" name="quetions_order[]" class="form-control" value="1">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Зображення</label>
+                            <input type="file" name="quetions_image[]" class="form-control">
+                        </div>
+                    </div>
+                    <div class="answers-section border-top pt-3 mt-3">
+                        <h5>Варіанти відповідей</h5>
+                        <div class="answers-list">
+                            <div class="answer-row input-group mb-2">
+                                <input type="text" name="answer_text_${questionIndex}[]" class="form-control" placeholder="Варіант відповіді...">
+                                <div class="input-group-text">
+                                    <input class="form-check-input mt-0 answer-checkbox" type="checkbox" name="answer_is_correct_${questionIndex}[]" value="0"> Правильна
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-2 add-answer-btn">+ Додати варіант відповіді</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', cardHtml);
+        questionIndex++;
+    });
+
+    // Делегування подій для додавання нових відповідей у конкретне питання
+    document.getElementById('questions-container').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('add-answer-btn')) {
+            const questionCard = e.target.closest('.question-card');
+            const qIndex = questionCard.getAttribute('data-question-index');
+            const answersList = questionCard.querySelector('.answers-list');
+            const answerCount = answersList.querySelectorAll('.answer-row').length;
+
+            const answerHtml = `
+                <div class="answer-row input-group mb-2">
+                    <input type="text" name="answer_text_${qIndex}[]" class="form-control" placeholder="Варіант відповіді...">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0 answer-checkbox" type="checkbox" name="answer_is_correct_${qIndex}[]" value="${answerCount}"> Правильна
+                    </div>
+                </div>
+            `;
+            answersList.insertAdjacentHTML('beforeend', answerHtml);
+        }
+    });
+</script>
+{% endblock %}

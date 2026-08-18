@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import AnswerOption, Quisetion, Servey, UserAnswer, UserServey
 
 # Додай дефолтне значення або дозволь нульові значення:
 
