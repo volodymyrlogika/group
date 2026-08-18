@@ -32,3 +32,27 @@ def delete_thread(request, thread_id):
     if request.user.is_staff or request.user == thread.creator:
         thread.delete()
     return redirect('forum_home')
+
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+    else:
+        post.dislikes.remove(request.user)
+        post.likes.add(request.user)
+        
+    return redirect('thread_detail', thread_id=post.thread.id)
+
+@login_required
+def dislike_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    
+    if post.dislikes.filter(id=request.user.id).exists():
+        post.dislikes.remove(request.user)
+    else:
+        post.likes.remove(request.user)
+        post.dislikes.add(request.user)
+        
+    return redirect('thread_detail', thread_id=post.thread.id)

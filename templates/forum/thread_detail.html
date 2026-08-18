@@ -28,6 +28,22 @@
                             <img src="{{ post.image.url }}" alt="Фото" class="img-fluid rounded" style="max-height: 300px;">
                         </div>
                     {% endif %}
+
+                    <div class="d-flex gap-2 mt-2">
+                        {% if user.is_authenticated %}
+                            <!-- Лайк -->
+                            <a href="{% url 'like_post' post.id %}" class="btn btn-sm {% if user in post.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                                👍 ({{ post.total_likes }})
+                            </a>
+                            <!-- Дізлайк -->
+                            <a href="{% url 'dislike_post' post.id %}" class="btn btn-sm {% if user in post.dislikes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                👎 ({{ post.total_dislikes }})
+                            </a>
+                        {% else %}
+                            <span class="badge bg-secondary">👍 {{ post.total_likes }}</span>
+                            <span class="badge bg-secondary">👎 {{ post.total_dislikes }}</span>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         {% empty %}
