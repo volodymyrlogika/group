@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Видалення опитування{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Підтвердження видалення</h4>
+            </div>
+            <div class="card-body">
+                <p class="fs-5">Ти дійсно хочеш видалити опитування <strong>«{{ object.title }}»</strong>?</p>
+                <p class="text-muted">Цю дію неможливо скасувати. Усі пов'язані питання, варіанти відповідей та результати користувачів також будуть видалені.</p>
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'servey_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash">,</i> Так, видалити
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
