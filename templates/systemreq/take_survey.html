@@ -16,20 +16,32 @@
                     <hr>
                 {% endif %}
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     
                     {{ form.non_field_errors }}
 
                     <div class="mb-4">
+                        <!-- Проходимося по полях форми -->
                         {% for field in form %}
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">{{ field.label }}</label>
+                            <div class="mb-4 p-3 border rounded bg-light">
+                                <!-- Текст питання (label поля) -->
+                                <label class="form-label fw-bold fs-5 text-dark mb-2">
+                                    {{ forloop.counter }}. {{ field.label }}
+                                </label>
+                                
+                                <!-- ВІДОБРАЖЕННЯ КАРТКИ ПИТАННЯ -->
+                                {% if field.field.question.image %}
+                                    <div class="my-3 text-center">
+                                        <img src="{{ field.field.question.image.url }}" class="img-fluid rounded shadow-sm" alt="Картинка до питання" style="max-height: 300px; object-fit: contain;">
+                                    </div>
+                                {% endif %}
+
                                 {% if field.errors %}
                                     <div class="text-danger small mb-2">{{ field.errors }}</div>
                                 {% endif %}
                                 
-                                <div class="ms-2">
+                                <div class="ms-2 mt-2">
                                     {% for radio in field %}
                                         <div class="form-check mb-2">
                                             {{ radio.tag }}
