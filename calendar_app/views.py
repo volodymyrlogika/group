@@ -90,6 +90,7 @@ class EventCalendarView(TemplateView):
             'year': year,
             'month': month,
             'month_name': calendar.month_name[month],
+            'today': today.date(),
             'weekdays': ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'],
             'month_weeks': month_weeks,
             'prev_month': (datetime(year, month, 1) - timedelta(days=1)).strftime('%Y-%m'),

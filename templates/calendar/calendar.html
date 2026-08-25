@@ -9,7 +9,7 @@
     <a class="btn btn-outline-secondary" href="?year={{ next_month|slice:':4' }}&month={{ next_month|slice:'5:' }}">Наступний місяць</a>
 </div>
 <h2>{{ month_name }} {{ year }}</h2>
-<table class="table table-bordered text-center">
+<table class="table text-center calendar-table">
     <thead>
         <tr>
             {% for weekday in weekdays %}
@@ -21,13 +21,19 @@
         {% for week in month_weeks %}
             <tr>
                 {% for day_data in week %}
-                    <td class="align-top {% if day_data.date.month != month %}bg-light text-muted{% endif %}">
-                        <div><strong>{{ day_data.date.day }}</strong></div>
-                        {% for event in day_data.events %}
-                            <div class="badge bg-primary text-wrap mb-1">
-                                <span class="text-white">{{ event.title }}</span>
+                    <td class="align-top calendar-cell {% if day_data.date.month != month %}calendar-cell-muted{% endif %}">
+                        <div class="calendar-cell-content">
+                            <div class="calendar-day-number {% if day_data.date == today %}calendar-day-today{% endif %}">
+                                <strong>{{ day_data.date.day }}</strong>
                             </div>
-                        {% endfor %}
+                            <div class="calendar-events">
+                                {% for event in day_data.events %}
+                                    <div class="badge bg-primary calendar-event" title="{{ event.title }}">
+                                        {{ event.title }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </td>
                 {% endfor %}
             </tr>
