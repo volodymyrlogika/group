@@ -3,6 +3,8 @@
 {% block title %}{{ project.name }} | Деталі проєкту{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <div class="row justify-content-center">
   <div class="col-12 col-lg-10">
     
@@ -40,7 +42,7 @@
             {% endfor %}
           </div>
 
-          {# Стрелки перемикання #}
+          {# Стрілки перемикання #}
           {% if project.images.count > 1 %}
             <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -67,62 +69,57 @@
           {% endif %}
         </div>
 
-        <p class="text-muted small mb-4">
-          <i class="bi bi-person me-1"></i> <strong>{{ project.author.username }}</strong> &bull;
-          <i class="bi bi-calendar3 me-1"></i> {{ project.created_at|date:"d E Y" }}
-        </p>
-
-        {# Перелік технологій #}
-        {% if project.get_technologies_list %}
+        {# Технології #}
+        {% if project.technologies %}
           <div class="mb-4">
-            <h6 class="fw-semibold text-secondary mb-2">Використані технології:</h6>
-            {% for tech in project.get_technologies_list %}
-              <span class="badge bg-primary bg-opacity-10 text-primary fs-6 me-1 mb-1 px-3 py-2 rounded-pill">
-                {{ tech }}
-              </span>
-            {% endfor %}
+            <h6 class="text-uppercase text-muted fw-bold small mb-2">Технології:</h6>
+            <div class="d-flex flex-wrap gap-1">
+              {% for tech in project.technologies.split %}
+                <span class="badge bg-secondary-subtle text-dark border">{{ tech }}</span>
+              {% empty %}
+                <span class="badge bg-secondary-subtle text-dark border">{{ project.technologies }}</span>
+              {% endfor %}
+            </div>
           </div>
         {% endif %}
 
-        <hr class="my-4 text-muted">
-
-        {# Опис проєкту #}
+        {# Опис #}
         <div class="mb-4">
-          <h5 class="fw-bold mb-3">Про проєкт:</h5>
-          <div class="lh-lg text-secondary" style="white-space: pre-line;">
+          <h5 class="fw-bold">Опис проєкту</h5>
+          <p class="card-text text-secondary style-description" style="white-space: pre-line;">
             {{ project.description }}
-          </div>
+          </p>
         </div>
 
         {# Посилання та файли #}
-        <div class="d-flex flex-wrap gap-2 pt-3">
+        <div class="d-flex flex-wrap gap-2 mb-4">
           {% if project.project_link %}
-            <a href="{{ project.project_link }}" target="_blank" class="btn btn-primary px-4">
-              <i class="bi bi-box-arrow-up-right me-2"></i>Відкрити проєкт
+            <a href="{{ project.project_link }}" target="_blank" class="btn btn-primary">
+              <i class="bi bi-box-arrow-up-right me-1"></i> Перейти до проєкту
             </a>
           {% endif %}
 
           {% if project.files %}
-            <a href="{{ project.files.url }}" download class="btn btn-outline-secondary px-4">
-              <i class="bi bi-download me-2"></i>Завантажити файли проєкту
+            <a href="{{ project.files.url }}" class="btn btn-outline-secondary" download>
+              <i class="bi bi-download me-1"></i> Завантажити файли
             </a>
           {% endif %}
         </div>
 
+        {# Кнопки управління для авторизованих користувачів #}
+        {% if user.is_authenticated %}
+          <hr class="my-4">
+          <div class="d-flex justify-content-end gap-2">
+            <a href="{% url 'project_update' project.pk %}" class="btn btn-warning">
+              <i class="bi bi-pencil me-1"></i> Редагувати
+            </a>
+            <a href="{% url 'project_delete' project.pk %}" class="btn btn-outline-danger">
+              <i class="bi bi-trash me-1"></i> Видалити
+            </a>
+          </div>
+        {% endif %}
+
       </div>
-
-      {# 3. Кнопки управління для автора проєкту #}
-      {% if user.is_authenticated and project.author == user %}
-        <div class="card-footer bg-light p-3 d-flex justify-content-end gap-2">
-          <a href="{% url 'project_update' project.pk %}" class="btn btn-warning text-white">
-            <i class="bi bi-pencil me-1"></i> Редагувати
-          </a>
-          <a href="{% url 'project_delete' project.pk %}" class="btn btn-danger">
-            <i class="bi bi-trash me-1"></i> Видалити
-          </a>
-        </div>
-      {% endif %}
-
     </div>
 
   </div>

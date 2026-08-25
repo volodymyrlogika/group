@@ -12,15 +12,15 @@
       <p class="text-muted m-0">Список усіх розроблених веб-додатків та робіт</p>
     </div>
 
-    {# Кнопка додавання нового проєкту (пункт 3) #}
+    {# Кнопка додавання нового проєкту #}
     {% if user.is_authenticated %}
-      <a href="{% url 'project_create' %}" class="btn btn-primary px-3 py-2 fw-semibold">
+      <a href="{% url 'project_create' %}" class="btn btn-primary px-3 py-2 fw-semibold shadow-sm">
         <i class="bi bi-plus-lg me-1"></i> Додати проєкт
       </a>
     {% endif %}
   </div>
 
-  {# Сітка картка-проєктів #}
+  {# Сітка карток проєктів #}
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     {% for project in projects %}
       <div class="col">
@@ -30,8 +30,8 @@
           {% if project.images.first %}
             <img src="{{ project.images.first.image.url }}" class="card-img-top" alt="{{ project.name }}" style="height: 200px; object-fit: cover;">
           {% else %}
-            <div class="bg-light d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
-              <i class="bi bi-image fs-1"></i>
+            <div class="bg-light d-flex align-items-center justify-content-center text-muted border-bottom" style="height: 200px;">
+              <i class="bi bi-image fs-1 text-secondary opacity-50"></i>
             </div>
           {% endif %}
 
@@ -39,9 +39,9 @@
             
             {# Заголовок та позначка кращого проєкту #}
             <div class="d-flex justify-content-between align-items-start mb-2">
-              <h5 class="card-title fw-bold m-0 text-truncate">{{ project.name }}</h5>
+              <h5 class="card-title fw-bold m-0 text-truncate" title="{{ project.name }}">{{ project.name }}</h5>
               {% if project.best_project %}
-                <span class="badge bg-warning text-dark ms-2">
+                <span class="badge bg-warning text-dark ms-2 flex-shrink-0">
                   <i class="bi bi-star-fill me-1"></i> Top
                 </span>
               {% endif %}
@@ -63,6 +63,7 @@
               {{ project.description|truncatewords:20 }}
             </p>
 
+            {# Нижній блок дій у картці #}
             <div class="border-top pt-3 mt-2 d-flex justify-content-between align-items-center">
               
               {# КНОПКА VIEW (Перейти до деталей) #}
@@ -87,7 +88,7 @@
           </div>
 
           <div class="card-footer bg-light border-0 px-4 py-2 text-end">
-            <small class="text-muted fs-7">
+            <small class="text-muted" style="font-size: 0.8rem;">
               <i class="bi bi-calendar3 me-1"></i>{{ project.created_at|date:"d.m.Y" }}
             </small>
           </div>
