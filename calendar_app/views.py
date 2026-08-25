@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 
 from .forms import EventForm
 from .models import Event
@@ -31,26 +31,11 @@ class HomeView(ListView):
         return Event.objects.filter(start_time__gte=timezone.now()).order_by('start_time')[:6]
 
 
-class EventListView(ListView):
-    model = Event
-    template_name = 'calendar/event_list.html'
-    context_object_name = 'events'
-
-    def get_queryset(self):
-        return Event.objects.order_by('start_time')
-
-
-class EventDetailView(DetailView):
-    model = Event
-    template_name = 'calendar/event_detail.html'
-    context_object_name = 'event'
-
-
 class EventCreateView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     template_name = 'calendar/event_form.html'
-    success_url = reverse_lazy('event_list')
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
@@ -61,13 +46,13 @@ class EventUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
     template_name = 'calendar/event_form.html'
-    success_url = reverse_lazy('event_list')
+    success_url = reverse_lazy('home')
 
 
 class EventDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
     model = Event
     template_name = 'calendar/event_confirm_delete.html'
-    success_url = reverse_lazy('event_list')
+    success_url = reverse_lazy('home')
 
 
 class EventCalendarView(TemplateView):

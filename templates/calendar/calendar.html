@@ -25,7 +25,7 @@
                         <div><strong>{{ day_data.date.day }}</strong></div>
                         {% for event in day_data.events %}
                             <div class="badge bg-primary text-wrap mb-1">
-                                <a class="text-white text-decoration-none" href="{% url 'event_detail' event.pk %}">{{ event.title }}</a>
+                                <span class="text-white">{{ event.title }}</span>
                             </div>
                         {% endfor %}
                     </td>

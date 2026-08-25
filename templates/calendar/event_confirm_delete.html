@@ -8,6 +8,6 @@
 <form method="post">
     {% csrf_token %}
     <button class="btn btn-danger" type="submit">Видалити</button>
-    <a class="btn btn-secondary" href="{% url 'event_list' %}">Скасувати</a>
+    <a class="btn btn-secondary" href="{% url 'home' %}">Скасувати</a>
 </form>
 {% endblock %}
