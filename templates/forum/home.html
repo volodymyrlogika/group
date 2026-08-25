@@ -1,25 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Форум обговорень</h1>
+<div class="container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
     
-    <!-- Список гілок форуму -->
-    <div class="list-group">
-        {% for thread in threads %}
-            <!-- При натисканні переходимо на конкретну гілку за її ID -->
-            <a href="{% url 'thread_detail' thread.id %}" class="list-group-item list-group-item-action p-3">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1 text-primary">{{ thread.title }}</h5>
-                    <small class="text-muted">{{ thread.created_at|date:"d.m.Y H:i" }}</small>
-                </div>
-                <p class="mb-1 text-secondary">{{ thread.description }}</p>
-                <small class="text-muted">Автор теми: {{ thread.creator.username }}</small>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1>Форум обговорень</h1>
+        
+        {% if request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'thread_create' %}" class="btn btn-primary" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Створити тред
             </a>
+        {% endif %}
+    </div>
+
+    <!-- Список усіх тредів -->
+    <div class="threads-list">
+        {% for thread in threads %}
+            <div class="thread-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                <h3>
+                    <a href="{% url 'thread_detail' thread.id %}" style="color: #333; text-decoration: none; font-weight: 600;">
+                        {{ thread.title }}
+                    </a>
+                </h3>
+                <p style="color: #666; font-size: 0.9rem;">
+                    Автор: {{ thread.creator.username }} | Створено: {{ thread.created_at|date:"d.m.Y H:i" }}
+                </p>
+                
+                <div style="margin-top: 10px; color: #888; font-size: 0.85rem;">
+                    👁️ Перегляди: {{ thread.views_count }}
+                </div>
+            </div>
         {% empty %}
-            <!-- Якщо в базі даних ще немає тем, покаже це повідомлення -->
-            <div class="alert alert-info">На форумі поки немає жодної теми.</div>
+            <p>Наразі немає жодного обговорення. {% if request.user.is_staff %}Станьте першим, хто його створить!{% endif %}</p>
         {% endfor %}
     </div>
+
 </div>
 {% endblock %}

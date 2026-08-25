@@ -10,6 +10,7 @@ class Thread(models.Model):
     description = models.TextField(blank=True, verbose_name="Опис гілки")
     created_at = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='threads')
+    views_count = models.PositiveIntegerField(default=0, verbose_name="Кількість переглядів")
 
     def __str__(self):
         return self.title
@@ -22,9 +23,11 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     dislikes = models.ManyToManyField(User, related_name='forum_dislikes', blank=True)
+    views_count = models.PositiveIntegerField(default=0, verbose_name="Кількість переглядів")
 
     def total_likes(self):
         return self.likes.count()
+    
     def total_dislikes(self):
         return self.dislikes.count()
 
