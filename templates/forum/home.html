@@ -35,5 +35,49 @@
         {% endfor %}
     </div>
 
+    <!-- 🟢 ГАРАНТОВАНО РІВНО 5 КВАДРАТИКІВ НАВКОЛО ПОТОЧНОЇ СТОРІНКИ -->
+    {% if threads.has_other_pages %}
+        <div style="display: flex; justify-content: center; margin-top: 30px;">
+            <nav aria-label="Навігація по сторінках">
+                <ul style="display: flex; list-style: none; padding-left: 0; gap: 8px; align-items: center;">
+                    
+                    <!-- Стрілочка Назад -->
+                    {% if threads.has_previous %}
+                        <li>
+                            <a href="?page={{ threads.previous_page_number }}" style="padding: 8px 12px; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: bold;">&lsaquo;</a>
+                        </li>
+                    {% endif %}
+
+                    <!-- Виводимо наш фіксований список із 5 цифр із бекенду -->
+                    {% for num in custom_page_range %}
+                        {% if threads.number == num %}
+                            <!-- Активна сторінка (підсвічена синім) -->
+                            <li>
+                                <span style="padding: 8px 14px; background-color: #007bff; color: white; border: 1px solid #007bff; border-radius: 6px; font-weight: bold;">
+                                    {{ num }}
+                                </span>
+                            </li>
+                        {% else %}
+                            <!-- Звичайні інші сторінки (білі кнопки) -->
+                            <li>
+                                <a href="?page={{ num }}" style="padding: 8px 14px; border: 1px solid #ddd; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: 500;">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Стрілочка Вперед -->
+                    {% if threads.has_next %}
+                        <li>
+                            <a href="?page={{ threads.next_page_number }}" style="padding: 8px 12px; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: bold;">&rsaquo;</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}
