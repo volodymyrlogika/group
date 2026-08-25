@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h1>Форум обговорень</h1>
+        
+        {% if request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'thread_create' %}" class="btn btn-primary" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Створити тред
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Список усіх тредів -->
+    <div class="threads-list">
+        {% for thread in threads %}
+            <div class="thread-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 8px;">
+                <h3>
+                    <a href="{% url 'thread_detail' thread.id %}" style="color: #333; text-decoration: none; font-weight: 600;">
+                        {{ thread.title }}
+                    </a>
+                </h3>
+                <p style="color: #666; font-size: 0.9rem;">
+                    Автор: {{ thread.creator.username }} | Створено: {{ thread.created_at|date:"d.m.Y H:i" }}
+                </p>
+                
+                <div style="margin-top: 10px; color: #888; font-size: 0.85rem;">
+                    👁️ Перегляди: {{ thread.views_count }}
+                </div>
+            </div>
+        {% empty %}
+            <p>Наразі немає жодного обговорення. {% if request.user.is_staff %}Станьте першим, хто його створить!{% endif %}</p>
+        {% endfor %}
+    </div>
+
+    <!-- 🟢 ГАРАНТОВАНО РІВНО 5 КВАДРАТИКІВ НАВКОЛО ПОТОЧНОЇ СТОРІНКИ -->
+    {% if threads.has_other_pages %}
+        <div style="display: flex; justify-content: center; margin-top: 30px;">
+            <nav aria-label="Навігація по сторінках">
+                <ul style="display: flex; list-style: none; padding-left: 0; gap: 8px; align-items: center;">
+                    
+                    <!-- Стрілочка Назад -->
+                    {% if threads.has_previous %}
+                        <li>
+                            <a href="?page={{ threads.previous_page_number }}" style="padding: 8px 12px; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: bold;">&lsaquo;</a>
+                        </li>
+                    {% endif %}
+
+                    <!-- Виводимо наш фіксований список із 5 цифр із бекенду -->
+                    {% for num in custom_page_range %}
+                        {% if threads.number == num %}
+                            <!-- Активна сторінка (підсвічена синім) -->
+                            <li>
+                                <span style="padding: 8px 14px; background-color: #007bff; color: white; border: 1px solid #007bff; border-radius: 6px; font-weight: bold;">
+                                    {{ num }}
+                                </span>
+                            </li>
+                        {% else %}
+                            <!-- Звичайні інші сторінки (білі кнопки) -->
+                            <li>
+                                <a href="?page={{ num }}" style="padding: 8px 14px; border: 1px solid #ddd; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: 500;">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Стрілочка Вперед -->
+                    {% if threads.has_next %}
+                        <li>
+                            <a href="?page={{ threads.next_page_number }}" style="padding: 8px 12px; border: 1px solid #007bff; color: #007bff; text-decoration: none; border-radius: 6px; font-weight: bold;">&rsaquo;</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
