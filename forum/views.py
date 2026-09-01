@@ -16,7 +16,7 @@ def forum_home(request):
     threads_list = Thread.objects.all().order_by('-created_at')
     
     # Кількість тредів на сторінку (залиште 1 для тесту або змініть на 20)
-    paginator = Paginator(threads_list, 1) 
+    paginator = Paginator(threads_list, 10) 
     
     page_number = request.GET.get('page', 1)
     try:
