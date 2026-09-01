@@ -40,7 +40,7 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         
        
-        context["latest_posts"] = Thread.objects.order_by('-created_at')[:3]
+        context["latest_threads"] = Thread.objects.order_by('-created_at')[:3]
         context["latest_surveys"] = Servey.objects.order_by('-date_created')[:3]
         
         return context
