@@ -28,9 +28,10 @@
                             </div>
                             <div class="calendar-events">
                                 {% for event in day_data.events %}
-                                    <div class="badge bg-primary calendar-event" title="{{ event.title }}">
-                                        {{ event.title }}
-                                    </div>
+                                      <a href="{% url 'event_edit' event.pk %}" > 
+                                <div class="badge bg-primary calendar-event" title="{{ event.title }}">
+                                          {{ event.title }}
+                                    </div></a>   
                                 {% endfor %}
                             </div>
                         </div>
