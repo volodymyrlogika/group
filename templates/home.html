@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %} Головна сторінка — Портал групи {% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Головна інформація про групу -->
+    <div class="col-12 mb-4">
+        <div class="p-5 bg-light rounded-3 shadow-sm border">
+            <div class="container-fluid py-2">
+                <h1 class="display-5 fw-bold text-primary">Вітаємо на порталі нашої групи!</h1>
+                <p class="col-md-8 fs-5 text-secondary mt-3">
+                    Це офіційний портал нашої групи. Тут ви знайдете новини, матеріали, зможете взяти участь в опитуваннях та обговорити питання на форумі.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Блок посередині: 3 картки з форуму -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h3 class="mb-3"><i class="bi bi-chat-square-text text-primary"></i> Останні обговорення на форумі</h3>
+    </div>
+    
+    {% for thread in latest_threads %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-dark fw-semibold">{{ thread.title }}</h5>
+                    <p class="card-text text-muted small flex-grow-1">{{ thread.description|truncatechars:80 }}</p>
+                    <!-- Використовуємо твій шлях thread_detail з forum/urls.py -->
+                    <a href="{% url 'thread_detail' thread.id %}" class="btn btn-outline-primary btn-sm mt-auto">Перейти до теми</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center" role="alert">
+                Немає подій
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Блок з опитуваннями -->
+<div class="row">
+    <div class="col-12">
+        <h3 class="mb-3"><i class="bi bi-check2-square text-success"></i> Актуальні опитування</h3>
+    </div>
+    {% for survey in latest_surveys %}
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm border-0 bg-light">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-dark">{{ survey.title }}</h5>
+                    <p class="card-text text-muted small flex-grow-1">{{ survey.description|truncatechars:70 }}</p>
+                    <!-- Використовуємо твій шлях take_survey_first_page з systemreq/urls.py -->
+                    <a href="{% url 'take_survey_first_page' survey.id %}" class="btn btn-success btn-sm mt-auto">Пройти опитування</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-secondary text-center" role="alert">
+                Наразі немає активних опитувань.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
