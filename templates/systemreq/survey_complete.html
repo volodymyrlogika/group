@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %} Результати опитування {% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
+                </div>
+                <h3 class="card-title mb-2">Опитування завершено!</h3>
+                <h5 class="text-muted mb-4">{{ servey.title }}</h5>
+                <p class="text-secondary">Ось твої відповіді, збережені у системі:</p>
+            </div>
+        </div>
+
+        <!-- Блок з виведенням відповідей користувача -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="bi bi-list-check"></i> Деталі твоїх відповідей</h5>
+            </div>
+            <div class="card-body">
+                {% with answers=user_servey.answers.all %}
+                    {% if answers %}
+                        <ul class="list-group list-group-flush">
+                            {% for ans in answers %}
+                                <li class="list-group-item py-3">
+                                    <div class="fw-bold text-dark mb-1">
+                                        <i class="bi bi-question-circle text-primary"></i> {{ ans.quition.text }}
+                                    </div>
+                                    <div class="text-muted ps-3">
+                                        {% if ans.answer_option.is_correct %}
+                                            <i class="bi bi-check-lg text-success"></i> 
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle">{{ ans.answer_option.text }}</span>
+                                        {% else %}
+                                            <i class="bi bi-x-lg text-danger"></i> 
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">{{ ans.answer_option.text }}</span>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted text-center mb-0">Відповідей поки не знайдено.</p>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div class="card-footer text-center bg-white py-3">
+                <a href="{% url 'servey_list' %}" class="btn btn-primary">
+                    <i class="bi bi-list-ul"></i> До списку опитувань
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

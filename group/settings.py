@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portfolio',
+    'calendar_app',
+    'systemreq',
+    'forum',
     'accounts',
 
 ]

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Редагувати подію{% else %}Додати подію{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if object %}Редагувати подію{% else %}Додати подію{% endif %}</h1>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{form.as_p}}
+    <button class="btn btn-primary" type="submit">Зберегти</button>
+    <a class="btn btn-secondary" href="{% url 'home' %}">Скасувати</a>
+</form>
+{% endblock %}
