@@ -13,26 +13,17 @@ class ProjectImageInline(admin.TabularInline):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     # Поля, які будуть відображатися у списку проєктів
-    list_display = (
-        'name',
-        'author',
-        'technologies',
-        'best_project',
-        'created_at',
-    )
-
+    list_display = ('name', 'author', 'technologies', 'best_project', 'created_at')
+    
     # Фільтри у правому боковому меню
-    list_filter = (
-        'best_project',
-        'created_at',
-        'author',
-    )
+    list_filter = ('best_project', 'created_at','author')
 
     # Поля, за якими працюватиме пошуковий рядок
     search_fields = (
         'name',
         'description',
         'technologies',
+        'author__username',  # Дозволяє шукати проєкти за іменем автора
     )
 
     # Автоматичне встановлення поточного користувача автором під час створення через адмінку

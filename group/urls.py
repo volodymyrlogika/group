@@ -29,3 +29,10 @@ urlpatterns = [
     path('forum/', include('forum.urls')),
     path('', include('accounts.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+admin.site.site_header = "Адмін-панель Порталу групи"
+admin.site.site_title = "Адмінка Сайту"
+admin.site.index_title = "Ласкаво просимо до адмінки"
+
